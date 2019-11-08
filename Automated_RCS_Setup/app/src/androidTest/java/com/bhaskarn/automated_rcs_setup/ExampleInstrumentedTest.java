@@ -36,6 +36,9 @@ public class ExampleInstrumentedTest {
     private static String TAG = "DebugTest";
     private UiDevice mUiDevice;
     private static String mAutPackageName = "com.google.android.apps.messaging";
+    Long wait_time_medium = 5000L;
+    Long wait_time_short = 2500L;
+    Long wait_time_very_short = 1000L;
 
     @Before
     public void setup() {
@@ -63,11 +66,11 @@ public class ExampleInstrumentedTest {
         click_apply();
         click_apply();
         click_apply();
-        removeAppFromRecentApps(mAutPackageName);
 
     }
 
     public void Launch_Play() {
+
         try {
             Context currentContext = InstrumentationRegistry.getInstrumentation().getContext();
             Intent launchAppOnPlay = new Intent(Intent.ACTION_VIEW,
@@ -83,8 +86,6 @@ public class ExampleInstrumentedTest {
     public void check_beta_enrollment() {
 
         String appName = "Messages (Beta)";
-
-
         String appTitle;
 
         try {
@@ -97,7 +98,7 @@ public class ExampleInstrumentedTest {
         } catch (UiObjectNotFoundException e) {
             Log.d("DebugTest", "Install_Messages: " + e.getLocalizedMessage());
         }
-        SystemClock.sleep(5000);
+        SystemClock.sleep(wait_time_medium);
 
     }
 
@@ -105,12 +106,12 @@ public class ExampleInstrumentedTest {
 
         UiObject button_action = mUiDevice.findObject(new UiSelector()
                 .className("android.widget.Button").text("Install"));
-        button_action.waitForExists(2500);
+        button_action.waitForExists(wait_time_short);
         if (!button_action.exists()) {
             button_action = mUiDevice.findObject(new UiSelector()
                     .className("android.widget.Button").text("Update"));
         }
-        button_action.waitForExists(2500);
+        button_action.waitForExists(wait_time_short);
         if (button_action.exists()) {
             try {
                 button_action.clickAndWaitForNewWindow();
@@ -141,12 +142,12 @@ public class ExampleInstrumentedTest {
         UiObject progressBar = mUiDevice.findObject(
                 new UiSelector().className("android.widget.ProgressBar").packageName("com.android.vending"));
         Log.d(TAG, "Utils_waitUntilProgressbarIsGone: progressBar exists "
-                + progressBar.waitForExists(10000));
+                + progressBar.waitForExists(2*wait_time_medium));
         if (progressBar.exists()) {
             Log.d(TAG, "waitUntilProgressbarIsGone: Maximum wait time of 120 secs here for the progress bar to be gone");
-            boolean flag = progressBar.waitUntilGone(120000);
+            boolean flag = progressBar.waitUntilGone(20*wait_time_medium);
             Log.d(TAG, "Utils_waitUntilProgressbarIsGone: " + flag);
-            SystemClock.sleep(1000);
+            SystemClock.sleep(wait_time_very_short);
         }
     }
 
@@ -158,13 +159,13 @@ public class ExampleInstrumentedTest {
 
     }
 
-    public void click_Set_ACS_URL() throws UiObjectNotFoundException {
+    public void click_Set_ACS_URL() {
 
         UiObject set_acs_url = mUiDevice.findObject(new UiSelector().text("Set ACS Url"));
         clickByBounds(set_acs_url);
     }
 
-    public void click_OTP_PATTERN() throws UiObjectNotFoundException {
+    public void click_OTP_PATTERN() {
 
         UiObject set_otp_pattern = mUiDevice.findObject(new UiSelector().text("Set OTP Pattern"));
         clickByBounds(set_otp_pattern);
@@ -177,7 +178,7 @@ public class ExampleInstrumentedTest {
             int Y = uiObjectBounds.centerY();
             mUiDevice.waitForIdle();
             mUiDevice.click(X, Y);
-            SystemClock.sleep(5000);
+            SystemClock.sleep(wait_time_medium);
         } catch (UiObjectNotFoundException e) {
             Log.d(TAG, "clickByBounds: exception " + e.getMessage());
         }
@@ -202,13 +203,9 @@ public class ExampleInstrumentedTest {
 
     public void click_apply() {
         UiObject button_apply = mUiDevice.findObject(new UiSelector().text("Apply"));
-        button_apply.waitForExists(5000);
+        button_apply.waitForExists(wait_time_medium);
         clickByBounds(button_apply);
-        SystemClock.sleep(2000);
-    }
-
-    public void removeAppFromRecentApps(String packageName) {
-        mUiDevice.pressHome();
+        SystemClock.sleep(wait_time_short);
     }
 
     public void clear_carrier_services_storage() {
